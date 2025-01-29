@@ -15,9 +15,21 @@ The increasing complexity of crime data poses challenges for law enforcement and
 
 **Work Done:**
 
-* **Data Preprocessing:** Imported raw data and performed spell-check on key columns. Transformed date and time fields into multiple temporal components. Corrected misspelled and duplicate entries using rapidfuzz. Consolidated block names and geocoded unique locations. Exported cleaned data as "Updated_crime_block_No_null.xlsx".
-* **Location Data Enrichment:** Used geopy for geocoding block names. Extracted ward, district, and community area using shapefiles. Final dataset saved as "Location_updated.xlsx".
-* **Visualization:** Imported data into Power BI with a star schema. Created metrics using DAX formulas: Total Crime Count, Arrest Rate, Safety Score. Developed dashboards for: Crime Hotspots, Crime Trends, Safety Assessments. Used TopoJSON for filled maps.
+* **Data Preprocessing:** 
+    1. Imported raw data and performed spell-check on key columns. 
+    2. Transformed date and time fields into multiple temporal components. 
+    3. Corrected misspelled and duplicate entries using rapidfuzz. 
+    4. Consolidated block names and geocoded unique locations. 
+    5. Exported cleaned data as "Updated_crime_block_No_null.xlsx".
+* **Location Data Enrichment:** 
+    1. Used geopy for geocoding block names. 
+    2. Extracted ward, district, and community area using shapefiles. 
+    3. Final dataset saved as "Location_updated.xlsx".
+* **Visualization:** 
+    1. Imported data into Power BI with a star schema. 
+    2. Created metrics using DAX formulas: Total Crime Count, Arrest Rate, Safety Score. 
+    3. Developed dashboards for: Crime Hotspots, Crime Trends, Safety Assessments. 
+    4. Used TopoJSON for filled maps.
 
 **Key Insights:** 
 
