@@ -1,16 +1,50 @@
-# Chicago-Crime-Analysis
-### Imported the excel file
-### Changed the date formats
-### Did spell check and duplicates
-### Saved the file
-### Used geo-coding on the block values to find the latitude and longitude values
-### Downloaded the shape files from the chicago govt portal
-### Filled the missing ward and community area details using it via spatial join
-### Saved the file as excel with location details, case id and ID.
-### Opend both saved excel files. Did a vlook up on the old file with the new file as reference and filled all the missing location related values in it.
-### Then splitted the location related data to one file and rest into another while keepin Case ID and ID as common columns to reduce the size and increase the ease of access.
-### Then imported both into the power bi and connected them using the ID column
-### Then manually created another excel sheet with years and corresponding crime count to find the year on year crime growth rate and connected it with the existing star topology
-### Created dax formulas to show the total crime count,  classify crime as severe and non severe, arrest rate, etc…
-### Created several visualizations and a consolidated dashboard with the aim of finding the crime hotspots and peak hours so that more crimes can be stopped with concentrated work on less area and time.
-### requirements file will be uploaded 
+# Chicago Crime Analysis
+
+The increasing complexity of crime data poses challenges for law enforcement and policymakers. This project focuses on analyzing crime data to:
+
+* Identify high-risk locations
+* Analyze crime trends and patterns
+* Improve resource allocation and enhance public safety
+
+**Objective:** Uncover actionable insights from the dataset to aid in crime prevention and foster safer communities.
+
+**Dataset:** The dataset used for this analysis includes:
+
+* Crime records from Chicago
+* Columns: Date, Location, Primary Type, Arrest, etc.
+
+**Work Done:**
+
+* **Data Preprocessing:** Imported raw data and performed spell-check on key columns. Transformed date and time fields into multiple temporal components. Corrected misspelled and duplicate entries using rapidfuzz. Consolidated block names and geocoded unique locations. Exported cleaned data as "Updated_crime_block_No_null.xlsx".
+* **Location Data Enrichment:** Used geopy for geocoding block names. Extracted ward, district, and community area using shapefiles. Final dataset saved as "Location_updated.xlsx".
+* **Visualization:** Imported data into Power BI with a star schema. Created metrics using DAX formulas: Total Crime Count, Arrest Rate, Safety Score. Developed dashboards for: Crime Hotspots, Crime Trends, Safety Assessments. Used TopoJSON for filled maps.
+
+**Key Insights:** 
+
+* Identified crime hotspots and peak hours.
+* Evaluated arrest efficiency by location.
+* Provided safety scores for neighborhoods.
+* Predicted future crime trends for proactive measures.
+
+**Tools Used:**
+
+* Python: pandas, geopandas, rapidfuzz, geopy
+* Power BI: Dashboards and visualizations
+* QGIS: Shapefile processing
+* GeoJson.io and Mapshaper: GeoJSON and TopoJSON conversion
+
+**How to Use:**
+
+1. Clone the repository:
+git clone https://github.com/Aravind-M2/Chicago-Crime-Analysis.git
+2. Install required Python libraries:
+pip install pandas geopandas geopy rapidfuzz
+
+3. Open the Jupyter notebooks for data cleaning and preprocessing.
+4. Load the Power BI file for visualizations.
+
+**Future Scope:**
+
+* Integration with live crime data
+* Enhanced predictive modeling
+* Real-time safety alerts
