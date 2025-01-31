@@ -1,0 +1,132 @@
+Detailed summary of work done:
+(using : Chicago_crime_data_cleaning_final.ipynb)
+Imported the Crime_Data excel file.
+	  Did spell check on following columns:
+	    #Location Description
+	    #Description
+	    #Primary Type
+	    #Block
+	  changed the data type on all objects to string:
+	    #FBI code
+	    #IUCR
+	    #all objects data typed columns
+	  Transformed the date and time: 
+	    #Date -> hour of day, day of week, day of month, week of month, month of year, week of year.
+	Used to rapidfuzz package to find the duplicates and perform the spell check.
+		Identify the similar(miss spelled and duplicated) values using it and save them as dictionary to analyze.
+		Verify and make changes in the dictionary by copying it into excel sheet/ notepad/ directly on the notebook(.ipynb) file
+		Using the dictionary changed values are corrected in the DataFrame.
+		For block column:
+			We find the locations(unique longitude and latitude values) with different block names.
+			Compare the repetition count of all the block names and replace the bock names with least values with the block name with the most value.
+	Exported as excel file with the saved changes("Updated_crime_block_No_null.xlsx")
+	Removed the location related columns except the location description.
+(using : Chicago_location_extraction_final.ipynb)
+Imported the Crime_Data excel file.
+	Listed out the unique block names:
+	Latitude and Longitude details are obtained by performing geocoding using the geopy and with block name as reference value.
+	Used a function to preprocess the block name to use it to geocoding.
+		Removed the prefixed "0"s. 
+		replaced the masked PI value "X" with "0" 
+		Added "Chicago" as suffix to find the right address.
+	Downloaded the shape files of chicago wards, community area and districts from the Chicago's portal.
+	The resultant values from geocoding of unique block names are stored in excel files as 'uni_block_file.xlsx'.
+	Copy the ID, Case number, block, latitude and Logitude columns from the source excel sheet to a fresh sheet and save it as "ALL_blocks". 
+	Use this block column in uni_block_file as reference, Perform a vlookup on ALL_blocks to fill the missing location details.
+	Used this "ALL_blocks" file to find the ward number and Community Area.
+	Used the shape file to perform spatial joining with geo pandas to find the ward number and community area
+	Exported it as "Location_updated.xlsx" excel file. 
+	Opened the "Location_updated.xlsx" excel file copied the values from "ALL_blocks" file to as sheet and with ID as reference did a vlookup with source file to get the District number, ward number and community Area. 
+	Now with ID as reference did a vlookup with the sheet in the same "Location_updated.xlsx" file to find the missing values in the ward and community area columns.
+	Now we have all the location details filled in the  "Location_updated.xlsx" file.
+
+PowerBI:
+	Imported both the final files into the power bi and connected them in star schema using ID column.
+	Exported the a data of years and its total crime count and calculated the year on year growth rate.
+	Imported the saved file and attached it to the star schema using the year_of_crime column
+	Rename the "sheet1" as "Crime details" and "don’t filter play" as "Location details"
+	Created the measures usind DAX formula to perform the necessary visualization. 
+		Dax Formula used:
+			Crime details:
+				Measures:
+				Formula to calculate the total crime count:
+				Total_crime = COUNT('Crime details'[Case Number])
+				
+				Formula to calculate the Arrest rate:
+				Arrest_Rate = DIVIDE(COUNTROWS(FILTER('Crime details', 'Crime details'[Arrest] = True)),COUNTROWS('Crime details'))*100 
+				
+				Formula to calculate the safety score:
+				Safety Score = 
+				100 - (
+				    10 * COUNTROWS(FILTER('Crime details', 'Crime details'[Primary Type] IN {
+				        "ARSON", "ASSAULT", "BATTERY", "CRIMINAL SEXUAL ASSAULT", "DOMESTIC VIOLENCE",
+				        "HOMICIDE", "HUMAN TRAFFICKING", "KIDNAPPING", "MOTOR VEHICLE THEFT",
+				        "NARCOTICS", "OFFENSE INVOLVING CHILDREN", "ROBBERY", "SEX OFFENSE",
+				        "STALKING", "WEAPONS VIOLATION"
+				    })) +
+				    5 * COUNTROWS(FILTER('Crime details', 'Crime details'[Primary Type] IN {
+				        "BURGLARY", "CONCEALED CARRY LICENSE VIOLATION", "CRIMINAL DAMAGE",
+				        "CRIMINAL TRESPASS", "DECEPTIVE PRACTICE", "GAMBLING", "INTERFERENCE WITH PUBLIC OFFICER",
+				        "INTIMIDATION", "LIQUOR LAW VIOLATION", "NON-CRIMINAL", "OBSCENITY", 
+				        "OTHER NARCOTIC VIOLATION", "OTHER OFFENSE", "PROSTITUTION", 
+				        "PUBLIC INDECENCY", "PUBLIC PEACE VIOLATION", "RITUALISM", "THEFT"
+				    }))
+				)
+				
+				
+				Columns:
+				Formula to find the hour of the day:
+				Time of Day = 
+				SWITCH(
+				    TRUE(),
+				    'Crime details'[Hour_Of_Crime] >= 6 && 'Crime details'[Hour_Of_Crime] < 12, "Morning",
+				    'Crime details'[Hour_Of_Crime] >= 12 && 'Crime details'[Hour_Of_Crime] < 16, "Noon",
+				    'Crime details'[Hour_Of_Crime] >= 16 && 'Crime details'[Hour_Of_Crime] < 20, "Evening",
+				    'Crime details'[Hour_Of_Crime] >= 20 && 'Crime details'[Hour_Of_Crime] < 24, "Night",
+				    "Late Night"
+				)
+				
+				Formula to find the season:
+				Season = 
+				SWITCH(
+				    TRUE(),
+				    MONTH('Crime details'[Date]) IN {12, 1, 2}, "Winter",
+				    MONTH('Crime details'[Date]) IN {3, 4, 5}, "Spring",
+				    MONTH('Crime details'[Date]) IN {6, 7, 8}, "Summer",
+				    "Autumn"
+				)
+				
+				Formula to classify the crime severity:
+				Crime Severity = 
+				SWITCH(
+				    TRUE(),
+				    'Crime details'[Primary Type] IN {"ARSON", "ASSAULT", "BATTERY", "CRIMINAL SEXUAL ASSAULT", "DOMESTIC VIOLENCE", "HOMICIDE", "HUMAN TRAFFICKING", "KIDNAPPING", "MOTOR VEHICLE THEFT", "NARCOTICS", "OFFENSE INVOLVING CHILDREN", "ROBBERY", "SEX OFFENSE", "STALKING", "WEAPONS VIOLATION"}, "Severe", 'Crime details'[Primary Type] IN {"BURGLARY", "CONCEALED CARRY LICENSE VIOLATION", "CRIMINAL DAMAGE", "CRIMINAL TRESPASS", "DECEPTIVE PRACTICE", "GAMBLING", "INTERFERENCE WITH PUBLIC OFFICER",
+				        "INTIMIDATION", "LIQUOR LAW VIOLATION", "NON-CRIMINAL", "OBSCENITY", "OTHER NARCOTIC VIOLATION", "OTHER OFFENSE", "PROSTITUTION", "PUBLIC INDECENCY", "PUBLIC PEACE VIOLATION", "RITUALISM", "THEFT"}, "Non-Severe", "Other"
+				)
+			Location details:
+				Columns:
+				Formula to replace commas with dot:
+				Lat = SUBSTITUTE('Location details'[Latitude],".",",")
+				Long = SUBSTITUTE('Location details'[Longitude],".",",")
+				
+			yoy_totals:
+				Measures:
+				Formula to calculate the average of year on year crime growth rate:
+				avg_yoy_growth_rate = SUM(yoy_totals[Growth_rate])/(COUNT(yoy_totals[Year_Of_Crime]) -1)
+				
+				
+				
+	Using the downloaded shape file created the required topojson file to create the filled map.
+		Imported the shape file into the  QGIS app.
+		Changed the CRS from EPSG:3435 (whatever is there) to EPSG:4326 (this is correct)
+		And exported it as GeoJson file.
+		Used the GeoJson.io website to confirm the correctness of the data 
+		Used the mapshaper website to convert the GeoJson file into the TopoJson file.
+		Used the TopoJson file in the Filled map with custom map option in power bi to visualize it.
+	Created visualization for each query in each page and created a power bi file with a consolidate dashboard with the aim to find the Crime hotspot and Peak hours.
+		
+		
+	
+	
+
+
