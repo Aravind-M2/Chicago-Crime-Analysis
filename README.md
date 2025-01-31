@@ -64,3 +64,9 @@ pip install pandas geopandas geopy rapidfuzz
 **Dashboards**
 ![alt text](image.png)
 ![alt text](image-1.png)
+
+**Open the PowerBI file to access the full dashboards**
+
+**online Slides**
+https://gamma.app/docs/Chicago-Crime-Analysis-1gvi1kgrh246jo9
+
