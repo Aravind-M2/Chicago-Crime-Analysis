@@ -60,3 +60,7 @@ pip install pandas geopandas geopy rapidfuzz
 * Integration with live crime data
 * Enhanced predictive modeling
 * Real-time safety alerts
+
+**Dashboards**
+![alt text](image.png)
+![alt text](image-1.png)
